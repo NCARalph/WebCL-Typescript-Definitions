@@ -5,14 +5,14 @@
 // WARNING: This is not fully tested!
 //
 // I just put this up to save some editing for other people playing with WebCL and Typescript
-// Version 1.0
+// Version 1.1 - Minor fixes to get more enums in place and fix some arguement interface types
+// Version 1.0 - Initial version
 
 interface Window {
     webcl: WEBCL.WebCL;
 }
 
 declare module WEBCL {
-
     // 3.6.1
     interface WebCLBuffer extends WebCLMemoryObject {
         createSubBuffer(memFlags: MemFlagsBits, origin: number, sizeInBytes: number): WebCLBuffer;
@@ -199,7 +199,7 @@ declare module WEBCL {
 
         createBuffer(memFlags: MemFlagsBits, sizeInBytes: number, hostPtr?: ArrayBufferView): WebCLBuffer;
 
-        createCommandQueue(device: WebCLDevice, properties?: number): WebCLCommandQueue;
+        createCommandQueue(device: WebCLDevice, properties?: CommandQueueProperties): WebCLCommandQueue;
 
         createImage(memFlags: MemFlagsBits,
             descriptor: WebCLImageDescriptor,
@@ -209,7 +209,7 @@ declare module WEBCL {
 
         createSampler(normalizedCoords: number,
             addressingMode: AddressingMode,
-            filterMode: number): WebCLSampler;
+            filterMode: FilterMode): WebCLSampler;
 
         createUserEvent(): WebCLUserEvent;
 
@@ -233,8 +233,8 @@ declare module WEBCL {
     interface WebCLEvent {
         WebCLEvent();
         getInfo(name: EventInfo): any;
-        getProfilingInfo(name: PlatformInfo): number;
-        setCallback(commandExecCallbackType: number, notify: WebCLCallback): void;
+        getProfilingInfo(name: ProfilingInfo): number;
+        setCallback(commandExecCallbackType: CommandExecutionStatus, notify: WebCLCallback): void;
         release(): void;
     }
 
@@ -272,10 +272,10 @@ declare module WEBCL {
 
     // 3.9.1
     interface WebCLKernelArgInfo {
-        name: string
-      typeName: string         // 'char', 'float', 'uint4', 'image2d_t', 'sampler_t', etc.
-      addressQualifier: string // 'global', 'local', 'constant', or 'private'
-      accessQualifier: string  // 'read_only', 'write_only', or 'none'
+        name: string;
+        typeName: string;         // 'char', 'float', 'uint4', 'image2d_t', 'sampler_t', etc.
+        addressQualifier: string; // 'global', 'local', 'constant', or 'private'
+        accessQualifier: string;  // 'read_only', 'write_only', or 'none'
     }
 
     // 3.6
@@ -294,7 +294,7 @@ declare module WEBCL {
 
     //3.8
     interface WebCLProgram {
-        getInfo(name: PlatformInfo): any;
+        getInfo(name: ProgramInfo): any;
 
         getBuildInfo(device: WebCLDevice, name: ProgramBuildInfo): any;
 
